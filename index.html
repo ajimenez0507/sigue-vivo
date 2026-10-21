@@ -49,7 +49,6 @@
             padding: 16px;
         }
 
-        /* Pantallas Wizard con fondo verde corporativo */
         .wizard-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -488,11 +487,6 @@
         <button class="wizard-btn" id="saveProfileBtn">Entrar a mi refugio</button>
     </div>
 
-    <!-- Audio ambiente real en bucle -->
-    <audio id="ambientAudio" loop preload="auto">
-        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=zen-meditation-ambient-111155.mp3" type="audio/mpeg">
-    </audio>
-
     <div class="watering-overlay" id="wateringOverlay">
         <div class="water-drop" style="left: 48%; animation-delay: 0s;"></div>
         <div class="water-drop" style="left: 50%; animation-delay: 0.2s;"></div>
@@ -503,7 +497,7 @@
         <header>
             <div class="logo">Sigue VIVO</div>
             <div class="header-actions">
-                <button class="icon-btn" id="audioToggleBtn" title="Silenciar / Activar música">🎵</button>
+                <button class="icon-btn" id="audioToggleBtn" title="Silenciar / Activar melodía">🎵</button>
                 <button class="icon-btn" id="themeToggle" title="Cambiar modo">🌙</button>
             </div>
         </header>
@@ -583,32 +577,82 @@
             const userGenderInput = document.getElementById('userGenderInput');
             const welcomeUserGreeting = document.getElementById('welcomeUserGreeting');
 
-            const audioElement = document.getElementById('ambientAudio');
             const audioToggleBtn = document.getElementById('audioToggleBtn');
-            let musicStarted = false;
+            
+            let audioCtx = null;
+            let melodyInterval = null;
+            let isPlaying = false;
 
-            function startBackgroundMusic() {
-                if (audioElement && !musicStarted) {
-                    audioElement.volume = 0.6;
-                    audioElement.play().then(() => {
-                        musicStarted = true;
-                        if (audioToggleBtn) audioToggleBtn.style.opacity = '1';
-                    }).catch(err => {
-                        console.log("Audio pendiente de interacción:", err);
-                    });
+            // Notas relajantes (Pentatónica de C: Do, Re, Mi, Sol, La) estilo caja de música
+            const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25];
+
+            function playZenNote() {
+                if (!audioCtx || !isPlaying) return;
+                try {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+
+                    // Seleccionar nota aleatoria de la escala relajante
+                    const note = notes[Math.floor(Math.random() * notes.length)];
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(note, audioCtx.currentTime);
+
+                    // Envolvente suave estilo arpa/campana (empieza suave, decae lentamente)
+                    gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.04, audioCtx.currentTime + 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 3.0);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 3.1);
+                } catch(e) {
+                    console.log("Nota omitida:", e);
                 }
             }
 
-            if (audioToggleBtn && audioElement) {
-                audioToggleBtn.addEventListener('click', () => {
-                    if (audioElement.paused) {
-                        audioElement.play();
+            function startMelody() {
+                if (isPlaying) return;
+                try {
+                    if (!audioCtx) {
+                        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                    isPlaying = true;
+                    if (audioToggleBtn) {
                         audioToggleBtn.innerText = '🎵';
-                        showToast("Música activada 🎧");
+                        audioToggleBtn.style.opacity = '1';
+                    }
+                    // Tocar una nota cada 1.2 segundos automáticamente
+                    playZenNote();
+                    melodyInterval = setInterval(playZenNote, 1200);
+                } catch(e) {
+                    console.log("Error al iniciar melodía:", e);
+                }
+            }
+
+            function stopMelody() {
+                if (!isPlaying) return;
+                isPlaying = false;
+                if (melodyInterval) {
+                    clearInterval(melodyInterval);
+                    melodyInterval = null;
+                }
+                if (audioToggleBtn) audioToggleBtn.innerText = '🔇';
+            }
+
+            // Control manual en cabecera
+            if (audioToggleBtn) {
+                audioToggleBtn.addEventListener('click', () => {
+                    if (isPlaying) {
+                        stopMelody();
+                        showToast("Melodía pausada");
                     } else {
-                        audioElement.pause();
-                        audioToggleBtn.innerText = '🔇';
-                        showToast("Música pausada");
+                        startMelody();
+                        showToast("Melodía activada 🎧");
                     }
                 });
             }
@@ -619,26 +663,26 @@
                 if (welcomeUserGreeting) welcomeUserGreeting.innerText = `Hola, ${savedProfile.name}:`;
             }
 
-            // Tocar pantalla de título -> Avanza a la frase
+            // Tocar pantalla de título -> Inicia melodía y avanza
             if (screenTitle) {
                 screenTitle.addEventListener('click', () => {
-                    startBackgroundMusic();
+                    startMelody();
                     screenTitle.classList.add('hidden');
                     if (screenQuote) screenQuote.classList.remove('hidden');
                 });
             }
 
-            // Botón de la frase -> Avanza al formulario de perfil
+            // Botón frase -> Avanza al perfil
             if (toProfileBtn) {
                 toProfileBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    startBackgroundMusic();
+                    startMelody();
                     if (screenQuote) screenQuote.classList.add('hidden');
                     if (screenProfile) screenProfile.classList.remove('hidden');
                 });
             }
 
-            // Guardar perfil y entrar a la app
+            // Guardar perfil y entrar
             if (saveProfileBtn) {
                 saveProfileBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -656,7 +700,7 @@
 
                     if (welcomeUserGreeting) welcomeUserGreeting.innerText = `Hola, ${name}:`;
                     if (screenProfile) screenProfile.classList.add('hidden');
-                    startBackgroundMusic();
+                    startMelody();
                 });
             }
 
