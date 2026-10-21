@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sigue vivo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4f2ec;
+            --card-bg: #ffffff;
+            --text-primary: #25382e;
+            --text-secondary: #5f7368;
+            --accent: #4a7c63;
+            --accent-light: #dce7e1;
+            --accent-hover: #3b634f;
+            --border: #d4d0c4;
+            --shadow: 0 15px 35px rgba(37, 56, 46, 0.08);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0e1411;
+            --card-bg: #161e1a;
+            --text-primary: #e0eae4;
+            --text-secondary: #8c9e94;
+            --accent: #5e967a;
+            --accent-light: #1b2821;
+            --accent-hover: #71b092;
+            --border: #223028;
+            --shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            border-radius: 36px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 780px;
+            position: relative;
+        }
+
+        header {
+            padding: 24px 24px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'Lora', serif;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: var(--accent-light);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        main {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .headphones-banner {
+            background: var(--accent-light);
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border: 1px solid rgba(74, 124, 99, 0.15);
+        }
+
+        .bonsai-widget {
+            background: linear-gradient(135deg, var(--accent-light), rgba(255,255,255,0.6));
+            border-radius: 24px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .bonsai-icon-container {
+            width: 65px;
+            height: 65px;
+            background: var(--card-bg);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+
+        .bonsai-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .bonsai-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .bonsai-progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0,0,0,0.06);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .bonsai-progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+            width: 5%;
+        }
+
+        .bonsai-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        .anchor-card {
+            background: var(--accent-light);
+            border-radius: 24px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .anchor-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .anchor-quote {
+            font-family: 'Lora', serif;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+            font-style: italic;
+        }
+
+        .emergency-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 16px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(74, 124, 99, 0.25);
+        }
+
+        .section-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        textarea {
+            width: 100%;
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            resize: none;
+            height: 70px;
+            outline: none;
+        }
+
+        .action-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 9px 14px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .modal-overlay, .breath-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(14, 20, 17, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.active, .breath-overlay.active {
+            opacity: 1; pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 32px;
+            padding: 30px;
+            width: 90%; max-width: 360px;
+            text-align: center;
+            display: flex; flex-direction: column; gap: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .modal-bonsai-display { font-size: 4rem; margin: 10px 0; }
+        .modal-title { font-family: 'Lora', serif; font-size: 1.4rem; color: var(--text-primary); }
+        .modal-text { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
+
+        .close-modal-btn, .close-breath {
+            background: var(--accent); color: white; border: none;
+            padding: 12px; border-radius: 16px; font-weight: 600; cursor: pointer;
+        }
+
+        .watering-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1500; display: flex; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .watering-overlay.active { opacity: 1; }
+        .water-drop {
+            position: absolute; width: 8px; height: 14px; background: #6baed6; border-radius: 50%;
+            animation: fallDrop 0.8s linear infinite;
+        }
+        @keyframes fallDrop {
+            0% { transform: translateY(-80px); opacity: 1; }
+            100% { transform: translateY(80px); opacity: 0; }
+        }
+
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--accent); color: white; padding: 12px 24px; border-radius: 16px;
+            font-size: 0.85rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: transform 0.3s ease; z-index: 1100;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="watering-overlay" id="wateringOverlay">
+        <div class="water-drop" style="left: 48%; animation-delay: 0s;"></div>
+        <div class="water-drop" style="left: 50%; animation-delay: 0.2s;"></div>
+        <div class="water-drop" style="left: 52%; animation-delay: 0.4s;"></div>
+    </div>
+
+    <div class="app-container">
+        <header>
+            <div class="logo">Sigue vivo</div>
+            <div class="header-actions">
+                <button class="icon-btn" id="audioToggle" onclick="toggleAudio()" title="Música relajante">🎵</button>
+                <button class="icon-btn" id="themeToggle" onclick="toggleTheme()" title="Cambiar modo">🌙</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="headphones-banner">
+                <span>🎧</span>
+                <div><strong>Consejo:</strong> Ponte los cascos y busca un rincón tranquilo.</div>
+            </div>
+
+            <div class="bonsai-widget" onclick="openBonsaiModal()">
+                <div class="bonsai-icon-container" id="bonsaiIcon">🌱</div>
+                <div class="bonsai-info">
+                    <div class="bonsai-title" id="bonsaiTitle">Brote de Bonsái (Día 1/20)</div>
+                    <div class="bonsai-subtitle" id="bonsaiStatusText">Toca para ver el estado de tu árbol</div>
+                    <div class="bonsai-progress-bar">
+                        <div class="bonsai-progress-fill" id="bonsaiProgressFill" style="width: 5%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="anchor-card">
+                <span class="anchor-tag">Ancla para hoy</span>
+                <p class="anchor-quote" id="dailyQuote">"El futuro aún no ha ocurrido y el pasado ya se fue. Lo único real es este segundo en el que estás respirando a salvo."</p>
+            </div>
+
+            <button class="emergency-btn" onclick="openBreathing()">
+                <span>🌿</span> Necesito parar y respirar
+            </button>
+
+            <div class="section-group">
+                <h3 class="section-title">1. Suelta un pensamiento intrusivo</h3>
+                <textarea id="thoughtInput" placeholder="Escribe lo que te preocupa y déjalo marchar..."></textarea>
+                <button class="action-btn" onclick="releaseThought()"><span>🍂</span> Dejarlo ir y borrar</button>
+            </div>
+
+            <div class="section-group">
+                <h3 class="section-title">2. ¿Qué te hace feliz o te reconforta hoy?</h3>
+                <textarea id="joyInput" placeholder="Un café caliente, un paseo, una canción..."></textarea>
+                <button class="action-btn" onclick="saveJoy()"><span>✨</span> Guardar en mi refugio</button>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="bonsaiModal">
+        <div class="modal-content">
+            <div class="modal-bonsai-display" id="modalBonsaiEmoji">🌱</div>
+            <h2 class="modal-title" id="modalBonsaiTitle">Tu Bonsái de Presencia</h2>
+            <p class="modal-text" id="modalBonsaiDesc">Cada día que entras y te cuidas, riegas este árbol. Al llegar al día 20, florecerá por completo.</p>
+            <button class="close-modal-btn" onclick="closeBonsaiModal()">Cuidar hoy y cerrar</button>
+        </div>
+    </div>
+
+    <div class="breath-overlay" id="breathOverlay">
+        <div class="breath-content" style="text-align:center; color:white; display:flex; flex-direction:column; align-items:center; gap:24px;">
+            <div class="breath-instruction" id="breathInstruction" style="font-family:'Lora',serif; font-size:1.4rem;">Inspira despacio...</div>
+            <div style="width:180px; height:180px; display:flex; justify-content:center; align-items:center; position:relative;">
+                <div id="breathCircle" style="width:100px; height:100px; background:rgba(94,150,122,0.5); border-radius:50%; transition:transform 4s ease-in-out;"></div>
+            </div>
+            <button class="close-breath" onclick="closeBreathing()">Ya estoy mejor</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Acción guardada con éxito.</div>
+
+    <script>
+        let bonsaiData = JSON.parse(localStorage.getItem('sigueVivoBonsai')) || { days: 1, lastWatered: '' };
+        const todayStr = new Date().toDateString();
+
+        function updateBonsaiUI() {
+            let days = bonsaiData.days;
+            if (days > 20) days = 20;
+
+            let emoji = "🌱";
+            let title = "Brote tierno";
+            if (days >= 5 && days < 10) { emoji = "🌿"; title = "Pequeño arbusto"; }
+            else if (days >= 10 && days < 15) { emoji = "🌳"; title = "Bonsái en crecimiento"; }
+            else if (days >= 15 && days < 20) { emoji = "🪴"; title = "Bonsái frondoso"; }
+            else if (days >= 20) { emoji = "🌸"; title = "Bonsái florecido (¡Completado!)"; }
+
+            document.getElementById('bonsaiIcon').innerText = emoji;
+            document.getElementById('bonsaiTitle').innerText = `${title} (Día ${days}/20)`;
+            document.getElementById('bonsaiProgressFill').style.width = `${(days / 20) * 100}%`;
+            document.getElementById('modalBonsaiEmoji').innerText = emoji;
+            document.getElementById('modalBonsaiTitle').innerText = title;
+            
+            if (days >= 20) {
+                document.getElementById('bonsaiStatusText').innerText = "¡Has completado el ciclo de 20 días!";
+                document.getElementById('modalBonsaiDesc').innerText = "Has completado los 20 días de presencia. Tu bonsái ha florecido como símbolo de tu fortaleza mental.";
+            } else {
+                document.getElementById('bonsaiStatusText').innerText = `Faltan ${20 - days} días para completar tu árbol`;
+                document.getElementById('modalBonsaiDesc').innerText = `Llevas ${days} días cuidando este espacio. Entra cada día para regarlo hasta florecer en el día 20.`;
+            }
+        }
+
+        function checkDailyWatering() {
+            if (bonsaiData.lastWatered !== todayStr) {
+                triggerWateringAnimation();
+                bonsaiData.days = Math.min(20, bonsaiData.days + (bonsaiData.lastWatered ? 1 : 0));
+                bonsaiData.lastWatered = todayStr;
+                localStorage.setItem('sigueVivoBonsai', JSON.stringify(bonsaiData));
+            }
+            updateBonsaiUI();
+        }
+
+        function triggerWateringAnimation() {
+            const overlay = document.getElementById('wateringOverlay');
+            overlay.classList.add('active');
+            setTimeout(() => overlay.classList.remove('active'), 2500);
+        }
+
+        function openBonsaiModal() {
+            document.getElementById('bonsaiModal').classList.add('active');
+        }
+
+        function closeBonsaiModal() {
+            document.getElementById('bonsaiModal').classList.remove('active');
+            triggerWateringAnimation();
+        }
+
+        checkDailyWatering();
+
+        const quotes = [
+            "El futuro aún no ha ocurrido y el pasado ya se fue. Lo único real es este segundo en el que estás respirando a salvo.",
+            "Una sensación física incómoda no es un peligro inminente. Tu cuerpo sabe cuidarse solo; déjale hacer.",
+            "No creas todo lo que piensa tu mente ansiosa hoy. Está intentando protegerte de fantasmas que no existen.",
+            "Estás aquí. Estás a salvo. Este momento exacto está bien tal y como es.",
+            "Soltar el control del mañana es el único billete para vivir en paz hoy."
+        ];
+        const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+        document.getElementById('dailyQuote').innerText = `"${quotes[dayOfYear % quotes.length]}"`;
+
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeToggle');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            document.getElementById('themeToggle').innerText = '☀️';
+        }
+
+        let audioCtx = null;
+        let isPlaying = false;
+        let oscillators = [];
+        let gainNode = null;
+
+        function toggleAudio() {
+            const btn = document.getElementById('audioToggle');
+            if (isPlaying) {
+                stopAmbientMusic();
+                isPlaying = false;
+                btn.style.opacity = '0.6';
+                showToast("Música pausada");
+            } else {
+                startAmbientMusic();
+                isPlaying = true;
+                btn.style.opacity = '1';
+                showToast("Reproduciendo música relajante 🎧");
+            }
+        }
+
+        function startAmbientMusic() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const frequencies = [130.81, 196.00, 220.00, 261.63]; 
+            gainNode = audioCtx.createGain();
+            gainNode.gain.setValueAtTime(0.001, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 3);
+            gainNode.connect(audioCtx.destination);
+            oscillators = frequencies.map(freq => {
+                const osc = audioCtx.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                osc.connect(gainNode);
+                osc.start();
+                return osc;
+            });
+        }
+
+        function stopAmbientMusic() {
+            if (gainNode && audioCtx) {
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+                setTimeout(() => {
+                    oscillators.forEach(osc => { try { osc.stop(); } catch(e){} });
+                    oscillators = [];
+                }, 1500);
+            }
+        }
+
+        let breathInterval;
