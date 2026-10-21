@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="manifest" href="manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sigue vivo</title>
+    <title>Sigue VIVO</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -47,6 +47,101 @@
             justify-content: center;
             align-items: center;
             padding: 16px;
+        }
+
+        /* Pantallas Wizard con fondo verde corporativo */
+        .wizard-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            z-index: 2000;
+            text-align: center;
+            gap: 20px;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            cursor: pointer;
+        }
+
+        .wizard-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .wizard-title {
+            font-family: 'Lora', serif;
+            font-size: 3rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        .wizard-quote {
+            font-family: 'Lora', serif;
+            font-size: 1.4rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+            font-style: italic;
+            max-width: 320px;
+        }
+
+        .wizard-btn {
+            margin-top: 15px;
+            background: white;
+            color: var(--accent);
+            border: none;
+            border-radius: 24px;
+            padding: 16px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+        }
+
+        .wizard-btn:active {
+            transform: scale(0.96);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            max-width: 300px;
+            text-align: left;
+        }
+
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 0.9rem;
+            color: white;
+            outline: none;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-select option {
+            background: var(--accent);
+            color: white;
         }
 
         .app-container {
@@ -260,39 +355,76 @@
             gap: 8px;
         }
 
-        .modal-overlay, .breath-overlay {
+        .breath-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(14, 20, 17, 0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(14, 20, 17, 0.94);
+            backdrop-filter: blur(12px);
             display: flex; justify-content: center; align-items: center;
             z-index: 1000;
             opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s ease;
         }
 
-        .modal-overlay.active, .breath-overlay.active {
+        .breath-overlay.active {
             opacity: 1; pointer-events: auto;
         }
 
-        .modal-content {
-            background: var(--card-bg);
-            border-radius: 32px;
-            padding: 30px;
-            width: 90%; max-width: 360px;
-            text-align: center;
-            display: flex; flex-direction: column; gap: 20px;
-            border: 1px solid var(--border);
+        .breath-content {
+            text-align: center; color: white; display: flex; flex-direction: column; align-items: center; gap: 32px;
+            padding: 20px;
         }
 
+        .breath-instruction {
+            font-family: 'Lora', serif;
+            font-size: 1.6rem;
+            letter-spacing: 0.5px;
+            min-height: 40px;
+            color: #dce7e1;
+        }
+
+        .breath-circle-container {
+            width: 220px; height: 220px; display: flex; justify-content: center; align-items: center; position: relative;
+        }
+
+        .breath-circle {
+            width: 90px; height: 90px; 
+            background: radial-gradient(circle, rgba(94,150,122,1) 0%, rgba(74,124,99,0.7) 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(94,150,122,0.6);
+            animation: breatheAnimation 10s infinite ease-in-out;
+        }
+
+        @keyframes breatheAnimation {
+            0% { transform: scale(1); }       
+            40% { transform: scale(1.9); }     
+            60% { transform: scale(1.9); }     
+            100% { transform: scale(1); }    
+        }
+
+        .close-breath {
+            background: var(--accent); color: white; border: none;
+            padding: 14px 30px; border-radius: 18px; font-weight: 600; cursor: pointer;
+            font-size: 0.95rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(14, 20, 17, 0.85); backdrop-filter: blur(10px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-content {
+            background: var(--card-bg); border-radius: 32px; padding: 30px;
+            width: 90%; max-width: 360px; text-align: center;
+            display: flex; flex-direction: column; gap: 20px; border: 1px solid var(--border);
+        }
         .modal-bonsai-display { font-size: 4rem; margin: 10px 0; }
         .modal-title { font-family: 'Lora', serif; font-size: 1.4rem; color: var(--text-primary); }
         .modal-text { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
-
-        .close-modal-btn, .close-breath {
-            background: var(--accent); color: white; border: none;
-            padding: 12px; border-radius: 16px; font-weight: 600; cursor: pointer;
-        }
+        .close-modal-btn { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 16px; font-weight: 600; cursor: pointer; }
 
         .watering-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -319,6 +451,48 @@
 </head>
 <body>
 
+    <!-- PASO 1: Pantalla de Título -->
+    <div class="wizard-screen" id="screenTitle">
+        <div style="font-size: 4rem; margin-bottom: -10px;">🌿</div>
+        <h1 class="wizard-title">Sigue VIVO</h1>
+        <p style="font-size: 0.85rem; opacity: 0.8; margin-top: 10px;">Toca en cualquier parte para continuar</p>
+    </div>
+
+    <!-- PASO 2: Pantalla de la Frase con Botón -->
+    <div class="wizard-screen hidden" id="screenQuote">
+        <p class="wizard-quote">"Es TU momento, lo demás, no importa."</p>
+        <button class="wizard-btn" id="toProfileBtn">Continuar</button>
+    </div>
+
+    <!-- PASO 3: Pantalla de Perfil de Usuario Obligatorio -->
+    <div class="wizard-screen hidden" id="screenProfile">
+        <h2 style="font-family:'Lora',serif; font-size:1.6rem; color:white; margin-bottom:5px;">Tu Perfil</h2>
+        <p style="font-size:0.85rem; color:rgba(255,255,255,0.8); margin-bottom:15px;">Completa tus datos para entrar a tu refugio</p>
+        <div class="form-group">
+            <label class="form-label">Nombre o Alias *</label>
+            <input type="text" id="userNameInput" class="form-input" placeholder="Ej. Aitor" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Edad *</label>
+            <input type="number" id="userAgeInput" class="form-input" placeholder="Ej. 35" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Sexo</label>
+            <select id="userGenderInput" class="form-select">
+                <option value="No especificado">Prefiero no decirlo</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Otro">Otro</option>
+            </select>
+        </div>
+        <button class="wizard-btn" id="saveProfileBtn">Entrar a mi refugio</button>
+    </div>
+
+    <!-- Audio ambiente real en bucle -->
+    <audio id="ambientAudio" loop preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=zen-meditation-ambient-111155.mp3" type="audio/mpeg">
+    </audio>
+
     <div class="watering-overlay" id="wateringOverlay">
         <div class="water-drop" style="left: 48%; animation-delay: 0s;"></div>
         <div class="water-drop" style="left: 50%; animation-delay: 0.2s;"></div>
@@ -327,9 +501,9 @@
 
     <div class="app-container">
         <header>
-            <div class="logo">Sigue vivo</div>
+            <div class="logo">Sigue VIVO</div>
             <div class="header-actions">
-                <button class="icon-btn" id="audioToggle" title="Música relajante">🎵</button>
+                <button class="icon-btn" id="audioToggleBtn" title="Silenciar / Activar música">🎵</button>
                 <button class="icon-btn" id="themeToggle" title="Cambiar modo">🌙</button>
             </div>
         </header>
@@ -337,7 +511,7 @@
         <main>
             <div class="headphones-banner">
                 <span>🎧</span>
-                <div><strong>Consejo:</strong> Ponte los cascos y busca un rincón tranquilo.</div>
+                <div><strong id="welcomeUserGreeting">Hola:</strong> Ponte los cascos y busca un rincón tranquilo.</div>
             </div>
 
             <div class="bonsai-widget" id="bonsaiWidgetBtn">
@@ -384,10 +558,10 @@
     </div>
 
     <div class="breath-overlay" id="breathOverlay">
-        <div class="breath-content" style="text-align:center; color:white; display:flex; flex-direction:column; align-items:center; gap:24px;">
-            <div class="breath-instruction" id="breathInstruction" style="font-family:'Lora',serif; font-size:1.4rem;">Inspira despacio...</div>
-            <div style="width:180px; height:180px; display:flex; justify-content:center; align-items:center; position:relative;">
-                <div id="breathCircle" style="width:100px; height:100px; background:rgba(94,150,122,0.5); border-radius:50%; transition:transform 4s ease-in-out;"></div>
+        <div class="breath-content">
+            <div class="breath-instruction" id="breathInstruction">Inspira despacio...</div>
+            <div class="breath-circle-container">
+                <div class="breath-circle" id="breathCircle"></div>
             </div>
             <button class="close-breath" id="closeBreathBtn">Ya estoy mejor</button>
         </div>
@@ -397,6 +571,95 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            const screenTitle = document.getElementById('screenTitle');
+            const screenQuote = document.getElementById('screenQuote');
+            const screenProfile = document.getElementById('screenProfile');
+            
+            const toProfileBtn = document.getElementById('toProfileBtn');
+            const saveProfileBtn = document.getElementById('saveProfileBtn');
+            
+            const userNameInput = document.getElementById('userNameInput');
+            const userAgeInput = document.getElementById('userAgeInput');
+            const userGenderInput = document.getElementById('userGenderInput');
+            const welcomeUserGreeting = document.getElementById('welcomeUserGreeting');
+
+            const audioElement = document.getElementById('ambientAudio');
+            const audioToggleBtn = document.getElementById('audioToggleBtn');
+            let musicStarted = false;
+
+            function startBackgroundMusic() {
+                if (audioElement && !musicStarted) {
+                    audioElement.volume = 0.6;
+                    audioElement.play().then(() => {
+                        musicStarted = true;
+                        if (audioToggleBtn) audioToggleBtn.style.opacity = '1';
+                    }).catch(err => {
+                        console.log("Audio pendiente de interacción:", err);
+                    });
+                }
+            }
+
+            if (audioToggleBtn && audioElement) {
+                audioToggleBtn.addEventListener('click', () => {
+                    if (audioElement.paused) {
+                        audioElement.play();
+                        audioToggleBtn.innerText = '🎵';
+                        showToast("Música activada 🎧");
+                    } else {
+                        audioElement.pause();
+                        audioToggleBtn.innerText = '🔇';
+                        showToast("Música pausada");
+                    }
+                });
+            }
+
+            // Cargar nombre si ya existía perfil previo
+            const savedProfile = JSON.parse(localStorage.getItem('sigueVivoProfile'));
+            if (savedProfile && savedProfile.name) {
+                if (welcomeUserGreeting) welcomeUserGreeting.innerText = `Hola, ${savedProfile.name}:`;
+            }
+
+            // Tocar pantalla de título -> Avanza a la frase
+            if (screenTitle) {
+                screenTitle.addEventListener('click', () => {
+                    startBackgroundMusic();
+                    screenTitle.classList.add('hidden');
+                    if (screenQuote) screenQuote.classList.remove('hidden');
+                });
+            }
+
+            // Botón de la frase -> Avanza al formulario de perfil
+            if (toProfileBtn) {
+                toProfileBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    startBackgroundMusic();
+                    if (screenQuote) screenQuote.classList.add('hidden');
+                    if (screenProfile) screenProfile.classList.remove('hidden');
+                });
+            }
+
+            // Guardar perfil y entrar a la app
+            if (saveProfileBtn) {
+                saveProfileBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const name = userNameInput.value.trim();
+                    const age = userAgeInput.value.trim();
+                    const gender = userGenderInput.value;
+
+                    if (!name || !age) {
+                        alert("Por favor, introduce tu nombre y tu edad para continuar.");
+                        return;
+                    }
+
+                    const profile = { name, age, gender };
+                    localStorage.setItem('sigueVivoProfile', JSON.stringify(profile));
+
+                    if (welcomeUserGreeting) welcomeUserGreeting.innerText = `Hola, ${name}:`;
+                    if (screenProfile) screenProfile.classList.add('hidden');
+                    startBackgroundMusic();
+                });
+            }
+
             let bonsaiData = JSON.parse(localStorage.getItem('sigueVivoBonsai')) || { days: 1, lastWatered: '' };
             const todayStr = new Date().toDateString();
 
@@ -511,13 +774,41 @@
 
             const emergencyBtn = document.getElementById('emergencyBtn');
             const breathOverlay = document.getElementById('breathOverlay');
+            const closeBreathBtn = document.getElementById('closeBreathBtn');
+            const breathInstruction = document.getElementById('breathInstruction');
+            let breathTimeout1, breathTimeout2, breathTimeout3;
+
             if (emergencyBtn && breathOverlay) {
-                emergencyBtn.addEventListener('click', () => breathOverlay.classList.add('active'));
+                emergencyBtn.addEventListener('click', () => {
+                    breathOverlay.classList.add('active');
+                    runBreathLoop();
+                });
             }
 
-            const closeBreathBtn = document.getElementById('closeBreathBtn');
             if (closeBreathBtn && breathOverlay) {
-                closeBreathBtn.addEventListener('click', () => breathOverlay.classList.remove('active'));
+                closeBreathBtn.addEventListener('click', () => {
+                    breathOverlay.classList.remove('active');
+                    clearTimeout(breathTimeout1);
+                    clearTimeout(breathTimeout2);
+                    clearTimeout(breathTimeout3);
+                });
+            }
+
+            function runBreathLoop() {
+                if (!breathInstruction) return;
+                
+                function updateCycle() {
+                    breathInstruction.innerText = "Inspira despacio...";
+                    breathTimeout1 = setTimeout(() => {
+                        breathInstruction.innerText = "Mantén el aire...";
+                    }, 4000); 
+                    breathTimeout2 = setTimeout(() => {
+                        breathInstruction.innerText = "Exhala con suavidad...";
+                    }, 6000); 
+                }
+
+                updateCycle();
+                breathTimeout3 = setInterval(updateCycle, 10000);
             }
 
             const thoughtBtn = document.getElementById('thoughtBtn');
@@ -544,64 +835,6 @@
                         showToast("Escribe algo que te reconforte");
                     }
                 });
-            }
-
-            let audioCtx = null;
-            let isPlaying = false;
-            let oscillators = [];
-            let gainNode = null;
-
-            const audioToggle = document.getElementById('audioToggle');
-            if (audioToggle) {
-                audioToggle.addEventListener('click', () => {
-                    if (isPlaying) {
-                        stopAmbientMusic();
-                        isPlaying = false;
-                        audioToggle.style.opacity = '0.6';
-                        showToast("Música pausada");
-                    } else {
-                        startAmbientMusic();
-                        isPlaying = true;
-                        audioToggle.style.opacity = '1';
-                        showToast("Reproduciendo música relajante 🎧");
-                    }
-                });
-            }
-
-            function startAmbientMusic() {
-                try {
-                    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    if (audioCtx.state === 'suspended') audioCtx.resume();
-                    const frequencies = [130.81, 196.00, 220.00, 261.63]; 
-                    gainNode = audioCtx.createGain();
-                    gainNode.gain.setValueAtTime(0.001, audioCtx.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 3);
-                    gainNode.connect(audioCtx.destination);
-                    oscillators = frequencies.map(freq => {
-                        const osc = audioCtx.createOscillator();
-                        osc.type = 'sine';
-                        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                        osc.connect(gainNode);
-                        osc.start();
-                        return osc;
-                    });
-                } catch(e) {
-                    console.log("Audio error:", e);
-                }
-            }
-
-            function stopAmbientMusic() {
-                try {
-                    if (gainNode && audioCtx) {
-                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
-                        setTimeout(() => {
-                            oscillators.forEach(osc => osc.stop());
-                            oscillators = [];
-                        }, 1000);
-                    }
-                } catch(e) {
-                    console.log("Stop audio error:", e);
-                }
             }
         });
     </script>
