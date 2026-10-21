@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sigue vivo</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     <style>
@@ -35,7 +34,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -268,7 +267,7 @@
             display: flex; justify-content: center; align-items: center;
             z-index: 1000;
             opacity: 0; pointer-events: none;
-            transition: opacity 0.4s ease;
+            transition: opacity 0.3s ease;
         }
 
         .modal-overlay.active, .breath-overlay.active {
@@ -329,8 +328,8 @@
         <header>
             <div class="logo">Sigue vivo</div>
             <div class="header-actions">
-                <button class="icon-btn" id="audioToggle" onclick="toggleAudio()" title="Música relajante">🎵</button>
-                <button class="icon-btn" id="themeToggle" onclick="toggleTheme()" title="Cambiar modo">🌙</button>
+                <button class="icon-btn" id="audioToggle" title="Música relajante">🎵</button>
+                <button class="icon-btn" id="themeToggle" title="Cambiar modo">🌙</button>
             </div>
         </header>
 
@@ -340,7 +339,7 @@
                 <div><strong>Consejo:</strong> Ponte los cascos y busca un rincón tranquilo.</div>
             </div>
 
-            <div class="bonsai-widget" onclick="openBonsaiModal()">
+            <div class="bonsai-widget" id="bonsaiWidgetBtn">
                 <div class="bonsai-icon-container" id="bonsaiIcon">🌱</div>
                 <div class="bonsai-info">
                     <div class="bonsai-title" id="bonsaiTitle">Brote de Bonsái (Día 1/20)</div>
@@ -356,20 +355,20 @@
                 <p class="anchor-quote" id="dailyQuote">"El futuro aún no ha ocurrido y el pasado ya se fue. Lo único real es este segundo en el que estás respirando a salvo."</p>
             </div>
 
-            <button class="emergency-btn" onclick="openBreathing()">
+            <button class="emergency-btn" id="emergencyBtn">
                 <span>🌿</span> Necesito parar y respirar
             </button>
 
             <div class="section-group">
                 <h3 class="section-title">1. Suelta un pensamiento intrusivo</h3>
                 <textarea id="thoughtInput" placeholder="Escribe lo que te preocupa y déjalo marchar..."></textarea>
-                <button class="action-btn" onclick="releaseThought()"><span>🍂</span> Dejarlo ir y borrar</button>
+                <button class="action-btn" id="thoughtBtn"><span>🍂</span> Dejarlo ir y borrar</button>
             </div>
 
             <div class="section-group">
                 <h3 class="section-title">2. ¿Qué te hace feliz o te reconforta hoy?</h3>
                 <textarea id="joyInput" placeholder="Un café caliente, un paseo, una canción..."></textarea>
-                <button class="action-btn" onclick="saveJoy()"><span>✨</span> Guardar en mi refugio</button>
+                <button class="action-btn" id="joyBtn"><span>✨</span> Guardar en mi refugio</button>
             </div>
         </main>
     </div>
@@ -379,7 +378,7 @@
             <div class="modal-bonsai-display" id="modalBonsaiEmoji">🌱</div>
             <h2 class="modal-title" id="modalBonsaiTitle">Tu Bonsái de Presencia</h2>
             <p class="modal-text" id="modalBonsaiDesc">Cada día que entras y te cuidas, riegas este árbol. Al llegar al día 20, florecerá por completo.</p>
-            <button class="close-modal-btn" onclick="closeBonsaiModal()">Cuidar hoy y cerrar</button>
+            <button class="close-modal-btn" id="closeModalBtn">Cuidar hoy y cerrar</button>
         </div>
     </div>
 
@@ -389,13 +388,14 @@
             <div style="width:180px; height:180px; display:flex; justify-content:center; align-items:center; position:relative;">
                 <div id="breathCircle" style="width:100px; height:100px; background:rgba(94,150,122,0.5); border-radius:50%; transition:transform 4s ease-in-out;"></div>
             </div>
-            <button class="close-breath" onclick="closeBreathing()">Ya estoy mejor</button>
+            <button class="close-breath" id="closeBreathBtn">Ya estoy mejor</button>
         </div>
     </div>
 
     <div class="toast" id="toast">Acción guardada con éxito.</div>
 
     <script>
+        // Lógica del Bonsái asegurada
         let bonsaiData = JSON.parse(localStorage.getItem('sigueVivoBonsai')) || { days: 1, lastWatered: '' };
         const todayStr = new Date().toDateString();
 
@@ -441,17 +441,19 @@
             setTimeout(() => overlay.classList.remove('active'), 2500);
         }
 
-        function openBonsaiModal() {
+        // Eventos táctiles directos para evitar bloqueos en APK
+        document.getElementById('bonsaiWidgetBtn').addEventListener('click', () => {
             document.getElementById('bonsaiModal').classList.add('active');
-        }
+        });
 
-        function closeBonsaiModal() {
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
             document.getElementById('bonsaiModal').classList.remove('active');
             triggerWateringAnimation();
-        }
+        });
 
         checkDailyWatering();
 
+        // Frases diarias
         const quotes = [
             "El futuro aún no ha ocurrido y el pasado ya se fue. Lo único real es este segundo en el que estás respirando a salvo.",
             "Una sensación física incómoda no es un peligro inminente. Tu cuerpo sabe cuidarse solo; déjale hacer.",
@@ -462,7 +464,8 @@
         const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
         document.getElementById('dailyQuote').innerText = `"${quotes[dayOfYear % quotes.length]}"`;
 
-        function toggleTheme() {
+        // Modo oscuro / claro
+        document.getElementById('themeToggle').addEventListener('click', () => {
             const body = document.body;
             const btn = document.getElementById('themeToggle');
             if (body.getAttribute('data-theme') === 'dark') {
@@ -474,18 +477,20 @@
                 btn.innerText = '☀️';
                 localStorage.setItem('theme', 'dark');
             }
-        }
+        });
+
         if (localStorage.getItem('theme') === 'dark') {
             document.body.setAttribute('data-theme', 'dark');
             document.getElementById('themeToggle').innerText = '☀️';
         }
 
+        // Audio Nativo con desbloqueo táctil
         let audioCtx = null;
         let isPlaying = false;
         let oscillators = [];
         let gainNode = null;
 
-        function toggleAudio() {
+        document.getElementById('audioToggle').addEventListener('click', () => {
             const btn = document.getElementById('audioToggle');
             if (isPlaying) {
                 stopAmbientMusic();
@@ -498,7 +503,7 @@
                 btn.style.opacity = '1';
                 showToast("Reproduciendo música relajante 🎧");
             }
-        }
+        });
 
         function startAmbientMusic() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -520,12 +525,3 @@
 
         function stopAmbientMusic() {
             if (gainNode && audioCtx) {
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
-                setTimeout(() => {
-                    oscillators.forEach(osc => { try { osc.stop(); } catch(e){} });
-                    oscillators = [];
-                }, 1500);
-            }
-        }
-
-        let breathInterval;
