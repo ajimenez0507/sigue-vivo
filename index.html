@@ -396,134 +396,214 @@
     <div class="toast" id="toast">Acción guardada con éxito.</div>
 
     <script>
-        // Lógica del Bonsái asegurada
-        let bonsaiData = JSON.parse(localStorage.getItem('sigueVivoBonsai')) || { days: 1, lastWatered: '' };
-        const todayStr = new Date().toDateString();
+        document.addEventListener("DOMContentLoaded", () => {
+            let bonsaiData = JSON.parse(localStorage.getItem('sigueVivoBonsai')) || { days: 1, lastWatered: '' };
+            const todayStr = new Date().toDateString();
 
-        function updateBonsaiUI() {
-            let days = bonsaiData.days;
-            if (days > 20) days = 20;
+            function updateBonsaiUI() {
+                let days = bonsaiData.days;
+                if (days > 20) days = 20;
 
-            let emoji = "🌱";
-            let title = "Brote tierno";
-            if (days >= 5 && days < 10) { emoji = "🌿"; title = "Pequeño arbusto"; }
-            else if (days >= 10 && days < 15) { emoji = "🌳"; title = "Bonsái en crecimiento"; }
-            else if (days >= 15 && days < 20) { emoji = "🪴"; title = "Bonsái frondoso"; }
-            else if (days >= 20) { emoji = "🌸"; title = "Bonsái florecido (¡Completado!)"; }
+                let emoji = "🌱";
+                let title = "Brote tierno";
+                if (days >= 5 && days < 10) { emoji = "🌿"; title = "Pequeño arbusto"; }
+                else if (days >= 10 && days < 15) { emoji = "🌳"; title = "Bonsái en crecimiento"; }
+                else if (days >= 15 && days < 20) { emoji = "🪴"; title = "Bonsái frondoso"; }
+                else if (days >= 20) { emoji = "🌸"; title = "Bonsái florecido (¡Completado!)"; }
 
-            document.getElementById('bonsaiIcon').innerText = emoji;
-            document.getElementById('bonsaiTitle').innerText = `${title} (Día ${days}/20)`;
-            document.getElementById('bonsaiProgressFill').style.width = `${(days / 20) * 100}%`;
-            document.getElementById('modalBonsaiEmoji').innerText = emoji;
-            document.getElementById('modalBonsaiTitle').innerText = title;
-            
-            if (days >= 20) {
-                document.getElementById('bonsaiStatusText').innerText = "¡Has completado el ciclo de 20 días!";
-                document.getElementById('modalBonsaiDesc').innerText = "Has completado los 20 días de presencia. Tu bonsái ha florecido como símbolo de tu fortaleza mental.";
-            } else {
-                document.getElementById('bonsaiStatusText').innerText = `Faltan ${20 - days} días para completar tu árbol`;
-                document.getElementById('modalBonsaiDesc').innerText = `Llevas ${days} días cuidando este espacio. Entra cada día para regarlo hasta florecer en el día 20.`;
+                const bonsaiIcon = document.getElementById('bonsaiIcon');
+                const bonsaiTitle = document.getElementById('bonsaiTitle');
+                const bonsaiProgressFill = document.getElementById('bonsaiProgressFill');
+                const modalBonsaiEmoji = document.getElementById('modalBonsaiEmoji');
+                const modalBonsaiTitle = document.getElementById('modalBonsaiTitle');
+                const bonsaiStatusText = document.getElementById('bonsaiStatusText');
+                const modalBonsaiDesc = document.getElementById('modalBonsaiDesc');
+
+                if (bonsaiIcon) bonsaiIcon.innerText = emoji;
+                if (bonsaiTitle) bonsaiTitle.innerText = `${title} (Día ${days}/20)`;
+                if (bonsaiProgressFill) bonsaiProgressFill.style.width = `${(days / 20) * 100}%`;
+                if (modalBonsaiEmoji) modalBonsaiEmoji.innerText = emoji;
+                if (modalBonsaiTitle) modalBonsaiTitle.innerText = title;
+                
+                if (days >= 20) {
+                    if (bonsaiStatusText) bonsaiStatusText.innerText = "¡Has completado el ciclo de 20 días!";
+                    if (modalBonsaiDesc) modalBonsaiDesc.innerText = "Has completado los 20 días de presencia. Tu bonsái ha florecido como símbolo de tu fortaleza mental.";
+                } else {
+                    if (bonsaiStatusText) bonsaiStatusText.innerText = `Faltan ${20 - days} días para completar tu árbol`;
+                    if (modalBonsaiDesc) modalBonsaiDesc.innerText = `Llevas ${days} días cuidando este espacio. Entra cada día para regarlo hasta florecer en el día 20.`;
+                }
             }
-        }
 
-        function checkDailyWatering() {
-            if (bonsaiData.lastWatered !== todayStr) {
-                triggerWateringAnimation();
-                bonsaiData.days = Math.min(20, bonsaiData.days + (bonsaiData.lastWatered ? 1 : 0));
-                bonsaiData.lastWatered = todayStr;
-                localStorage.setItem('sigueVivoBonsai', JSON.stringify(bonsaiData));
+            function triggerWateringAnimation() {
+                const overlay = document.getElementById('wateringOverlay');
+                if (overlay) {
+                    overlay.classList.add('active');
+                    setTimeout(() => overlay.classList.remove('active'), 2500);
+                }
             }
-            updateBonsaiUI();
-        }
 
-        function triggerWateringAnimation() {
-            const overlay = document.getElementById('wateringOverlay');
-            overlay.classList.add('active');
-            setTimeout(() => overlay.classList.remove('active'), 2500);
-        }
+            function checkDailyWatering() {
+                if (bonsaiData.lastWatered !== todayStr) {
+                    triggerWateringAnimation();
+                    bonsaiData.days = Math.min(20, bonsaiData.days + (bonsaiData.lastWatered ? 1 : 0));
+                    bonsaiData.lastWatered = todayStr;
+                    localStorage.setItem('sigueVivoBonsai', JSON.stringify(bonsaiData));
+                }
+                updateBonsaiUI();
+            }
 
-        // Eventos táctiles y de clic para los botones principales
-        document.getElementById('bonsaiWidgetBtn').addEventListener('click', () => {
-            document.getElementById('bonsaiModal').classList.add('active');
-        });
+            checkDailyWatering();
 
-        document.getElementById('closeModalBtn').addEventListener('click', () => {
-            document.getElementById('bonsaiModal').classList.remove('active');
-            triggerWateringAnimation();
-        });
+            const quotes = [
+                "El futuro aún no ha ocurrido y el pasado ya se fue. Lo único real es este segundo en el que estás respirando a salvo.",
+                "Una sensación física incómoda no es un peligro inminente. Tu cuerpo sabe cuidarse solo; déjale hacer.",
+                "No creas todo lo que piensa tu mente ansiosa hoy. Está intentando protegerte de fantasmas que no existen.",
+                "Estás aquí. Estás a salvo. Este momento exacto está bien tal y como es.",
+                "Soltar el control del mañana es el único billete para vivir en paz hoy."
+            ];
+            const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+            const dailyQuoteEl = document.getElementById('dailyQuote');
+            if (dailyQuoteEl) dailyQuoteEl.innerText = `"${quotes[dayOfYear % quotes.length]}"`;
 
-        checkDailyWatering();
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    const body = document.body;
+                    if (body.getAttribute('data-theme') === 'dark') {
+                        body.removeAttribute('data-theme');
+                        themeToggle.innerText = '🌙';
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        body.setAttribute('data-theme', 'dark');
+                        themeToggle.innerText = '☀️';
+                        localStorage.setItem('theme', 'dark');
+                    }
+                });
+            }
 
-        // Frases diarias
-        const quotes = [
-            "El futuro aún no ha ocurrido y el pasado ya se fue. Lo único real es este segundo en el que estás respirando a salvo.",
-            "Una sensación física incómoda no es un peligro inminente. Tu cuerpo sabe cuidarse solo; déjale hacer.",
-            "No creas todo lo que piensa tu mente ansiosa hoy. Está intentando protegerte de fantasmas que no existen.",
-            "Estás aquí. Estás a salvo. Este momento exacto está bien tal y como es.",
-            "Soltar el control del mañana es el único billete para vivir en paz hoy."
-        ];
-        const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-        document.getElementById('dailyQuote').innerText = `"${quotes[dayOfYear % quotes.length]}"`;
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                if (themeToggle) themeToggle.innerText = '☀️';
+            }
 
-        // Modo oscuro / claro
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            const body = document.body;
-            const btn = document.getElementById('themeToggle');
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.removeAttribute('data-theme');
-                btn.innerText = '🌙';
-                localStorage.setItem('theme', 'light');
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                btn.innerText = '☀️';
-                localStorage.setItem('theme', 'dark');
+            function showToast(message) {
+                const toast = document.getElementById('toast');
+                if (toast) {
+                    toast.innerText = message;
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 2500);
+                }
+            }
+
+            const bonsaiWidgetBtn = document.getElementById('bonsaiWidgetBtn');
+            const bonsaiModal = document.getElementById('bonsaiModal');
+            if (bonsaiWidgetBtn && bonsaiModal) {
+                bonsaiWidgetBtn.addEventListener('click', () => bonsaiModal.classList.add('active'));
+            }
+
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            if (closeModalBtn && bonsaiModal) {
+                closeModalBtn.addEventListener('click', () => {
+                    bonsaiModal.classList.remove('active');
+                    triggerWateringAnimation();
+                });
+            }
+
+            const emergencyBtn = document.getElementById('emergencyBtn');
+            const breathOverlay = document.getElementById('breathOverlay');
+            if (emergencyBtn && breathOverlay) {
+                emergencyBtn.addEventListener('click', () => breathOverlay.classList.add('active'));
+            }
+
+            const closeBreathBtn = document.getElementById('closeBreathBtn');
+            if (closeBreathBtn && breathOverlay) {
+                closeBreathBtn.addEventListener('click', () => breathOverlay.classList.remove('active'));
+            }
+
+            const thoughtBtn = document.getElementById('thoughtBtn');
+            if (thoughtBtn) {
+                thoughtBtn.addEventListener('click', () => {
+                    const input = document.getElementById('thoughtInput');
+                    if (input && input.value.trim() !== '') {
+                        input.value = '';
+                        showToast("Pensamiento dejado ir con éxito 🍂");
+                    } else {
+                        showToast("Escribe algo antes de dejarlo marchar");
+                    }
+                });
+            }
+
+            const joyBtn = document.getElementById('joyBtn');
+            if (joyBtn) {
+                joyBtn.addEventListener('click', () => {
+                    const input = document.getElementById('joyInput');
+                    if (input && input.value.trim() !== '') {
+                        input.value = '';
+                        showToast("Guardado en tu refugio ✨");
+                    } else {
+                        showToast("Escribe algo que te reconforte");
+                    }
+                });
+            }
+
+            let audioCtx = null;
+            let isPlaying = false;
+            let oscillators = [];
+            let gainNode = null;
+
+            const audioToggle = document.getElementById('audioToggle');
+            if (audioToggle) {
+                audioToggle.addEventListener('click', () => {
+                    if (isPlaying) {
+                        stopAmbientMusic();
+                        isPlaying = false;
+                        audioToggle.style.opacity = '0.6';
+                        showToast("Música pausada");
+                    } else {
+                        startAmbientMusic();
+                        isPlaying = true;
+                        audioToggle.style.opacity = '1';
+                        showToast("Reproduciendo música relajante 🎧");
+                    }
+                });
+            }
+
+            function startAmbientMusic() {
+                try {
+                    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    if (audioCtx.state === 'suspended') audioCtx.resume();
+                    const frequencies = [130.81, 196.00, 220.00, 261.63]; 
+                    gainNode = audioCtx.createGain();
+                    gainNode.gain.setValueAtTime(0.001, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 3);
+                    gainNode.connect(audioCtx.destination);
+                    oscillators = frequencies.map(freq => {
+                        const osc = audioCtx.createOscillator();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                        osc.connect(gainNode);
+                        osc.start();
+                        return osc;
+                    });
+                } catch(e) {
+                    console.log("Audio error:", e);
+                }
+            }
+
+            function stopAmbientMusic() {
+                try {
+                    if (gainNode && audioCtx) {
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
+                        setTimeout(() => {
+                            oscillators.forEach(osc => osc.stop());
+                            oscillators = [];
+                        }, 1000);
+                    }
+                } catch(e) {
+                    console.log("Stop audio error:", e);
+                }
             }
         });
-
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.setAttribute('data-theme', 'dark');
-            document.getElementById('themeToggle').innerText = '☀️';
-        }
-
-        // Toast de aviso
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.innerText = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2500);
-        }
-
-        // Botón de emergencia / respiración
-        document.getElementById('emergencyBtn').addEventListener('click', () => {
-            document.getElementById('breathOverlay').classList.add('active');
-        });
-
-        document.getElementById('closeBreathBtn').addEventListener('click', () => {
-            document.getElementById('breathOverlay').classList.remove('active');
-        });
-
-        // Limpiar pensamiento intrusivo
-        document.getElementById('thoughtBtn').addEventListener('click', () => {
-            const input = document.getElementById('thoughtInput');
-            if (input.value.trim() !== '') {
-                input.value = '';
-                showToast("Pensamiento dejado ir con éxito 🍂");
-            } else {
-                showToast("Escribe algo antes de dejarlo marchar");
-            }
-        });
-
-        // Guardar refugio
-        document.getElementById('joyBtn').addEventListener('click', () => {
-            const input = document.getElementById('joyInput');
-            if (input.value.trim() !== '') {
-                input.value = '';
-                showToast("Guardado en tu refugio ✨");
-            } else {
-                showToast("Escribe algo que te reconforte");
-            }
-        });
-
-        // Audio Nativo con desbloqueo táctil
-        let audioCtx = null;
-        le
+    </script>
+</body>
+</html>
